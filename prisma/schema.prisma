@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Session {
+  id        Int      @id @default(autoincrement())
+  domain    String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  steps              SessionStep[]        @relation("SessionSteps")
+  optimizationResult OptimizationResult[] @relation("SessionOptimizations")
+
+  @@index([domain])
+  @@map("sessions")
+}
+
+model SessionStep {
+  id        Int      @id @default(autoincrement())
+  session   Session  @relation("SessionSteps", fields: [sessionId], references: [id], onDelete: Cascade)
+  sessionId Int      @map("session_id")
+  stepNumber Int     @map("step_number")
+  stepData  Json     @map("step_data")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([sessionId, stepNumber])
+  @@index([sessionId])
+  @@map("session_steps")
+}
+
+model OptimizationResult {
+  id        Int      @id @default(autoincrement())
+  session   Session  @relation("SessionOptimizations", fields: [sessionId], references: [id], onDelete: Cascade)
+  sessionId Int      @map("session_id")
+  agentId   String   @map("agent_id")
+  suggestions Json
+  metrics    Json
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([sessionId])
+  @@map("optimization_results")
+}
