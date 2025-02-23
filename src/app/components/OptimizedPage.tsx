@@ -205,69 +205,8 @@ export function OptimizedPage() {
     }
   }, [selectedAgent, userURL]); // Simplified dependencies
 
-  if (isLoading) {
-    return (
-      <div className="max-w-4xl mx-auto p-6">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-center space-y-8"
-        >
-          <div className="flex flex-col items-center space-y-4">
-            <div className="text-2xl font-bold text-gray-900">
-              Hang tight we are upgrading your site
-            </div>
-          </div>
-
-          <div className="w-full max-w-md mx-auto space-y-4">
-            <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-              <motion.div
-                className="h-full bg-emerald-500 rounded-full"
-                initial={{ width: "0%" }}
-                animate={{ width: `${progress}%` }}
-                transition={{ duration: 0.5 }}
-              />
-            </div>
-            <motion.div
-              key={currentPhase}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="text-gray-900 font-medium"
-            >
-              {scanningPhases[currentPhase]?.message}
-            </motion.div>
-            <div className="text-sm text-gray-600 font-medium">
-              {progress}% complete
-            </div>
-          </div>
-        </motion.div>
-      </div>
-    );
-  }
-
-  if (error || !optimizationResult) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="max-w-4xl mx-auto p-6"
-      >
-        <div className="bg-red-50 border-2 border-red-200 rounded-lg p-6 text-center">
-          <p className="text-red-700 font-medium mb-4">{error || 'Something went wrong'}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
-          >
-            Try Again
-          </button>
-        </div>
-      </motion.div>
-    );
-  }
-
   return (
-    <div className="max-w-6xl mx-auto p-6">
+    <div className="max-w-[90rem] mx-auto p-6">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Left side - Website Preview */}
         <div>
@@ -275,11 +214,8 @@ export function OptimizedPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <div className="bg-white rounded-lg border-2 border-gray-200 h-[600px] overflow-hidden">
-              <IframeErrorBoundary
-                url={userURL}
-                className="w-full h-full"
-              />
+            <div className="bg-white rounded-lg border-2 border-gray-200 h-[800px] overflow-hidden">
+              <IframeErrorBoundary url={userURL} />
             </div>
           </motion.div>
         </div>
@@ -288,84 +224,118 @@ export function OptimizedPage() {
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="space-y-6"
+          className="space-y-6 h-[800px] overflow-y-auto pr-4"
         >
-          {/* Conversion Rate Insight */}
-          <div className="bg-white rounded-lg border-2 border-gray-200 p-6">
-            <div className="text-5xl font-bold text-emerald-600 mb-2">
-              {insights.conversionRate}%
-            </div>
-            <div className="text-gray-600 text-sm">
-              Potential Conversion Rate Uplift<br />
-              Identified by Our Optimization Engine
-            </div>
-          </div>
-
-          {/* Problems Section */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900">Problems I see on your page</h3>
-            {insights.problems.map((problem, index) => (
-              <div key={index} className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
-                  🔍
+          {isLoading ? (
+            <div className="space-y-6">
+              <div className="bg-white rounded-lg border-2 border-gray-200 p-6">
+                <div className="text-2xl font-bold text-gray-900 mb-4">
+                  Analyzing your website
                 </div>
-                <p className="text-gray-800">{problem}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Enhancements Section */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900">
-              I made {insights.enhancements.length} enhancements to your website
-            </h3>
-            {insights.enhancements.map((enhancement, index) => (
-              <div key={index} className="bg-white rounded-lg border-2 border-gray-200 p-4">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
-                    ✨
+                <div className="space-y-4">
+                  <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <motion.div
+                      className="h-full bg-orange-500 rounded-full"
+                      initial={{ width: "0%" }}
+                      animate={{ width: `${progress}%` }}
+                      transition={{ duration: 0.5 }}
+                    />
                   </div>
-                  <h4 className="font-medium text-gray-900">{enhancement.title}</h4>
-                </div>
-                <div className="space-y-3">
-                  <div className="bg-gray-50 p-3 rounded">
-                    <div className="text-sm text-gray-500 mb-1">Previous Copy</div>
-                    <div className="text-gray-900">{enhancement.before}</div>
-                  </div>
-                  <div className="bg-emerald-50 p-3 rounded">
-                    <div className="text-sm text-emerald-600 mb-1">Enhanced Version</div>
-                    <div className="text-gray-900">{enhancement.after}</div>
+                  <motion.div
+                    key={currentPhase}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    className="text-gray-900 font-medium"
+                  >
+                    {scanningPhases[currentPhase]?.message}
+                  </motion.div>
+                  <div className="text-sm text-gray-600 font-medium">
+                    {progress}% complete
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
 
-          {/* Data Insights Section */}
-          <div className="bg-black rounded-lg p-6 text-white">
-            <div className="flex items-center gap-2 mb-4">
-              <span className="text-xl">📊</span>
-              <h3 className="text-lg font-semibold">Data-driven Insights</h3>
-            </div>
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <span>⏱️</span>
-                <span>Previous Copy</span>
-              </div>
-              <div className="bg-gray-800 p-3 rounded">
-                Basic analytics dashboard
+              {/* Loading placeholders */}
+              <div className="space-y-4 animate-pulse">
+                <div className="h-32 bg-gray-100 rounded-lg"></div>
+                <div className="h-48 bg-gray-100 rounded-lg"></div>
+                <div className="h-64 bg-gray-100 rounded-lg"></div>
               </div>
             </div>
-          </div>
+          ) : error ? (
+            <div className="bg-red-50 border-2 border-red-200 rounded-lg p-6 text-center">
+              <p className="text-red-700 font-medium mb-4">{error}</p>
+              <button
+                onClick={() => window.location.reload()}
+                className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
+              >
+                Try Again
+              </button>
+            </div>
+          ) : (
+            <>
+              {/* Conversion Rate Insight */}
+              <div className="bg-white rounded-lg border-2 border-gray-200 p-6">
+                <div className="text-5xl font-bold text-emerald-600 mb-2">
+                  {insights.conversionRate}%
+                </div>
+                <div className="text-gray-600 text-sm">
+                  Potential Conversion Rate Uplift<br />
+                  Identified by Our Optimization Engine
+                </div>
+              </div>
 
-          {/* Action Button */}
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="w-full py-4 bg-orange-500 text-white rounded-lg font-medium text-lg hover:bg-orange-600 transition-colors"
-          >
-            Book Demo
-          </motion.button>
+              {/* Problems Section */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-gray-900">Problems I see on your page</h3>
+                {insights.problems.map((problem, index) => (
+                  <div key={index} className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+                      🔍
+                    </div>
+                    <p className="text-gray-800">{problem}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Enhancements Section */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-gray-900">
+                  I made {insights.enhancements.length} enhancements to your website
+                </h3>
+                {insights.enhancements.map((enhancement, index) => (
+                  <div key={index} className="bg-white rounded-lg border-2 border-gray-200 p-4">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+                        ✨
+                      </div>
+                      <h4 className="font-medium text-gray-900">{enhancement.title}</h4>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="bg-gray-50 p-3 rounded">
+                        <div className="text-sm text-gray-500 mb-1">Previous Copy</div>
+                        <div className="text-gray-900">{enhancement.before}</div>
+                      </div>
+                      <div className="bg-emerald-50 p-3 rounded">
+                        <div className="text-sm text-emerald-600 mb-1">Enhanced Version</div>
+                        <div className="text-gray-900">{enhancement.after}</div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Action Button */}
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="w-full py-4 bg-orange-500 text-white rounded-lg font-medium text-lg hover:bg-orange-600 transition-colors"
+              >
+                Book Demo
+              </motion.button>
+            </>
+          )}
         </motion.div>
       </div>
     </div>

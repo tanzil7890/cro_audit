@@ -247,6 +247,7 @@ export function QuestionFlow({ url, websiteInfo, onComplete }: QuestionFlowProps
               suggestions={suggestions[currentQuestion.type]}
               onSelectionChange={handleSelectionChange}
               initialSelections={answers[currentQuestion.type]}
+              questionType={currentQuestion.type}
             />
           </motion.div>
         )}
